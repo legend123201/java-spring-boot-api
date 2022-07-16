@@ -6,31 +6,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.restfulapi.dto.UserDto;
-import com.example.demo.restfulapi.mapper.UserMapper;
+import com.example.demo.restfulapi.dto.StaffDto;
+import com.example.demo.restfulapi.mapper.StaffMapper;
 import com.example.demo.restfulapi.message.ResponseMessage;
 import com.example.demo.restfulapi.model.ResponseCustom;
-import com.example.demo.restfulapi.model.User;
-import com.example.demo.restfulapi.repository.UserRepository;
-import com.example.demo.restfulapi.service.IUserService;
+import com.example.demo.restfulapi.model.Staff;
+import com.example.demo.restfulapi.repository.StaffRepository;
+import com.example.demo.restfulapi.service.IStaffService;
 
 @Service
-public class UserService implements IUserService {
+public class StaffService implements IStaffService {
 	@Autowired
-	private UserRepository userRepository;
+	private StaffRepository staffRepository;
 
 	@Autowired
-	private UserMapper userMapper;
+	private StaffMapper staffMapper;
 
 	private ResponseMessage responseMessage = new ResponseMessage();
 	
-	// private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+	// private static final Logger LOGGER = LoggerFactory.getLogger(StaffService.class);
 
 	@Override
-	public ResponseEntity<?> getAllUsers() {
+	public ResponseEntity<?> getAllStaffs() {
 		try {
-			List<User> allUsers = userRepository.findAll();
-			ResponseCustom<List<UserDto>> res = new ResponseCustom<List<UserDto>>(userMapper.entityToDto(allUsers),
+			List<Staff> allStaffs = staffRepository.findAll();
+			ResponseCustom<List<StaffDto>> res = new ResponseCustom<List<StaffDto>>(staffMapper.entityToDto(allStaffs),
 					responseMessage.GET_ALL_SUCCESS);
 			return ResponseEntity.ok().body(res);
 		} catch (Exception e) {
@@ -41,10 +41,10 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public ResponseEntity<?> createUser(UserDto newUserDto) {
+	public ResponseEntity<?> createStaff(StaffDto newStaffDto) {
 		try {
-			User newUser = userRepository.save(userMapper.dtoToEntity(newUserDto));
-			ResponseCustom<UserDto> res = new ResponseCustom<UserDto>(userMapper.entityToDto(newUser),
+			Staff newStaff = staffRepository.save(staffMapper.dtoToEntity(newStaffDto));
+			ResponseCustom<StaffDto> res = new ResponseCustom<StaffDto>(staffMapper.entityToDto(newStaff),
 					responseMessage.CREATE_SUCCESS);
 
 			return ResponseEntity.ok().body(res);
@@ -57,11 +57,11 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public ResponseEntity<?> deleteUser(Long userId) {
+	public ResponseEntity<?> deleteStaff(Long staffId) {
 		try {
-			User deleteUser = userRepository.findById(userId).orElseThrow();
-			userRepository.delete(deleteUser); // this function return void
-			ResponseCustom<UserDto> res = new ResponseCustom<>(userMapper.entityToDto(deleteUser),
+			Staff deleteStaff = staffRepository.findById(staffId).orElseThrow();
+			staffRepository.delete(deleteStaff); // this function return void
+			ResponseCustom<StaffDto> res = new ResponseCustom<>(staffMapper.entityToDto(deleteStaff),
 					responseMessage.DELETE_SUCCESS);
 
 			return ResponseEntity.ok().body(res);
@@ -74,11 +74,11 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public ResponseEntity<?> updateUser(Long userId, UserDto updateUserDto) {
+	public ResponseEntity<?> updateStaff(Long staffId, StaffDto updateStaffDto) {
 		try {
-			userRepository.findById(userId).orElseThrow();
-			User updateUser = userRepository.save(userMapper.dtoToEntity(updateUserDto));
-			ResponseCustom<UserDto> res = new ResponseCustom<>(userMapper.entityToDto(updateUser),
+			staffRepository.findById(staffId).orElseThrow();
+			Staff updateStaff = staffRepository.save(staffMapper.dtoToEntity(updateStaffDto));
+			ResponseCustom<StaffDto> res = new ResponseCustom<>(staffMapper.entityToDto(updateStaff),
 					responseMessage.UPDATE_SUCCESS);
 
 			return ResponseEntity.ok().body(res);
