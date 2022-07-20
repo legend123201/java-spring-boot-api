@@ -11,8 +11,8 @@ import javax.persistence.ManyToOne;
 import com.example.demo.restfulapi.model.Bill;
 import com.example.demo.restfulapi.model.Product;
 
-@Embeddable 
-public class BillDetailId implements Serializable { 
+@Embeddable
+public class BillDetailId implements Serializable {
 	/**
 	 * 
 	 */
@@ -21,7 +21,7 @@ public class BillDetailId implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "bill_id")
 	private Bill bill;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id")
 	private Product product;
@@ -42,7 +42,36 @@ public class BillDetailId implements Serializable {
 		BillDetailId other = (BillDetailId) obj;
 		return Objects.equals(bill, other.bill) && Objects.equals(product, other.product);
 	}
-	
-	
- 
-} 
+
+	public BillDetailId() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public BillDetailId(Bill bill, Product product) {
+		super();
+		this.bill = bill;
+		this.product = product;
+	}
+
+	public Bill getBill() {
+		return bill;
+	}
+
+	public void setBill(Bill bill) {
+		this.bill = bill;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+}

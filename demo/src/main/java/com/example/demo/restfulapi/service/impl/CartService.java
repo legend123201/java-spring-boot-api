@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.restfulapi.dto.CartDto;
-import com.example.demo.restfulapi.dto.UserDto;
 import com.example.demo.restfulapi.mapper.CartMapper;
 import com.example.demo.restfulapi.message.ResponseMessage;
 import com.example.demo.restfulapi.model.ResponseCustom;

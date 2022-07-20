@@ -4,18 +4,13 @@ import com.example.demo.restfulapi.dto.CartDto;
 import com.example.demo.restfulapi.model.Cart;
 import com.example.demo.restfulapi.model.compositeKey.CartId;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class CartMapper extends GenericMapper<Cart, CartDto> {
-	private ModelMapper modelMapper = new ModelMapper();
-
 	@Override
 	public Cart dtoToEntity(CartDto cartDto) {
 		CartId cartId = new CartId(cartDto.getUser(), cartDto.getProduct());

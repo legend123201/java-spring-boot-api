@@ -43,6 +43,37 @@ public class ImportOrderDetailId implements Serializable {
 		return Objects.equals(importOrder, other.importOrder) && Objects.equals(product, other.product);
 	}
 
+	public ImportOrderDetailId() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public ImportOrderDetailId(ImportOrder importOrder, Product product) {
+		super();
+		this.importOrder = importOrder;
+		this.product = product;
+	}
+
+	public ImportOrder getImportOrder() {
+		return importOrder;
+	}
+
+	public void setImportOrder(ImportOrder importOrder) {
+		this.importOrder = importOrder;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	
  
 } 
