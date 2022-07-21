@@ -11,5 +11,7 @@ import com.example.demo.restfulapi.model.compositeKey.CartId;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, CartId> {
-	List<Cart> findAllByCartId_User(User user);
+	List<Cart> findAllByCartId_User(User user); 
+	void deleteAllByCartId_User(User user);
+	
 }

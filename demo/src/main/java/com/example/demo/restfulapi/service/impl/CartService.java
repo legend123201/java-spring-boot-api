@@ -41,7 +41,7 @@ public class CartService implements ICartService {
 	// LoggerFactory.getLogger(CartService.class);
 
 	@Override
-	public ResponseEntity<?> getCartsByUser(Long userId) {
+	public ResponseEntity<?> getCartsByUserId(Long userId) {
 		try {
 			User user = userRepository.findById(userId).orElseThrow();
 			List<Cart> cartsByUser = cartRepository.findAllByCartId_User(user);

@@ -40,7 +40,7 @@ public class ImportOrder implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ImportOrder(Long id, LocalDateTime datetime, Staff staff) {
+	public ImportOrder(LocalDateTime datetime, Staff staff) {
 		super();
 		this.id = id;
 		this.datetime = datetime;
