@@ -1,5 +1,6 @@
 package com.example.demo.restfulapi.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import com.example.demo.restfulapi.dto.ImportOrderDetailDto;
 import com.example.demo.restfulapi.mapper.ImportOrderDetailMapper;
 import com.example.demo.restfulapi.message.ResponseMessage;
 import com.example.demo.restfulapi.model.ResponseCustom;
+import com.example.demo.restfulapi.model.extra.BillAndPrice;
 import com.example.demo.restfulapi.model.ImportOrder;
 import com.example.demo.restfulapi.model.ImportOrderDetail;
 import com.example.demo.restfulapi.repository.BillRepository;
@@ -56,6 +58,29 @@ public class AnalyticService implements IAnalyticService {
 		try {
 			Integer totalCompleted = billRepository.totalCompletedBill();
 			ResponseCustom<Integer> res = new ResponseCustom<Integer>(totalCompleted,
+					responseMessage.ANALYTIC_SUCCESS);
+			return ResponseEntity.ok().body(res);
+		} catch (Exception e) {
+			// TODO: handle exception
+			ResponseCustom<String> res = new ResponseCustom<String>(null, e.getMessage());
+			return ResponseEntity.badRequest().body(res);
+		}
+	}	
+	
+	@Override
+	public ResponseEntity<?> analyticRevenueByMonth() {
+		try {
+			List<BillAndPrice> billAndPriceList = billRepository.BillAndPriceList();
+			int thisYear = LocalDateTime.now().getYear();
+			int[] analyticRevenueByMonth = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			
+			for(BillAndPrice billAndPrice : billAndPriceList) {
+				if(billAndPrice.getdatetime().getYear() == thisYear) {
+					analyticRevenueByMonth[billAndPrice.getdatetime().getMonthValue() - 1] += billAndPrice.getbillPrice();
+				}
+			}
+			
+			ResponseCustom<int[]> res = new ResponseCustom<int[]>(analyticRevenueByMonth,
 					responseMessage.ANALYTIC_SUCCESS);
 			return ResponseEntity.ok().body(res);
 		} catch (Exception e) {

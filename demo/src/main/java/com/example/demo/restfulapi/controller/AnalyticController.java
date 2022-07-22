@@ -31,4 +31,9 @@ public class AnalyticController {
 	public ResponseEntity<?> analyticBill() {
 		return analyticService.analyticBill();
 	}
+	
+	@GetMapping("/revenue")
+	public ResponseEntity<?> analyticRevenueByMonth() {
+		return analyticService.analyticRevenueByMonth();
+	}
 }
