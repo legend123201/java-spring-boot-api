@@ -3,6 +3,9 @@ package com.example.demo.restfulapi.service.impl;
 import java.util.List;
 
 import java.time.LocalDateTime;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,8 @@ import com.example.demo.restfulapi.model.ResponseCustom;
 import com.example.demo.restfulapi.model.Staff;
 import com.example.demo.restfulapi.model.User;
 import com.example.demo.restfulapi.model.compositeKey.BillDetailId;
+import com.example.demo.restfulapi.model.extra.BillAndPrice;
+import com.example.demo.restfulapi.model.extra.UserBills;
 import com.example.demo.restfulapi.model.Bill;
 import com.example.demo.restfulapi.model.BillDetail;
 import com.example.demo.restfulapi.model.Cart;
@@ -34,7 +39,7 @@ import com.example.demo.restfulapi.service.IBillService;
 public class BillService implements IBillService {
 	@Autowired
 	private BillRepository billRepository;
-	
+
 	@Autowired
 	private BillDetailRepository billDetailRepository;
 
@@ -46,7 +51,7 @@ public class BillService implements IBillService {
 
 	@Autowired
 	private ProductRepository productRepository;
-	
+
 	@Autowired
 	private StaffRepository staffRepository;
 
@@ -55,9 +60,8 @@ public class BillService implements IBillService {
 
 	private ResponseMessage responseMessage = new ResponseMessage();
 
-	// private static final Logger LOGGER =
-	// LoggerFactory.getLogger(BillService.class);
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(BillService.class);
+
 	@Override
 	public ResponseEntity<?> getAllBills() {
 		try {
@@ -76,8 +80,9 @@ public class BillService implements IBillService {
 	public ResponseEntity<?> getAllBillsByUserId(Long userId) {
 		try {
 			User user = userRepository.findById(userId).orElseThrow();
-			List<Bill> billList = billRepository.findAllByUser(user);
-			ResponseCustom<List<BillDto>> res = new ResponseCustom<List<BillDto>>(billMapper.entityToDto(billList),
+			List<UserBills> billList = billRepository.BillListByUserId(userId);
+			
+			ResponseCustom<List<UserBills>> res = new ResponseCustom<List<UserBills>>(billList,
 					responseMessage.GET_ALL_SUCCESS);
 			return ResponseEntity.ok().body(res);
 		} catch (Exception e) {
@@ -85,16 +90,16 @@ public class BillService implements IBillService {
 			ResponseCustom<String> res = new ResponseCustom<String>(null, e.getMessage());
 			return ResponseEntity.badRequest().body(res);
 		}
-	}	
-	
+	}
+
 	@Override
 	@Transactional
 	public ResponseEntity<?> createBill(Long userId) {
 		try {
 			User user = userRepository.findById(userId).orElseThrow();
 			List<Cart> cartList = cartRepository.findAllByCartId_User(user);
-			
-			if(cartList.isEmpty()) {
+
+			if (cartList.isEmpty()) {
 				ResponseCustom<String> res = new ResponseCustom<String>(null, responseMessage.NO_ITEM_IN_CART);
 				return ResponseEntity.badRequest().body(res);
 			}
@@ -108,11 +113,11 @@ public class BillService implements IBillService {
 					return ResponseEntity.badRequest().body(res);
 				}
 			}
-			
+
 			// them bill
 			Bill bill = new Bill(LocalDateTime.now(), user, null);
 			Bill newBill = billRepository.save(bill);
-			
+
 			// them bill detail
 			for (Cart cart : cartList) {
 				Product product = productRepository.findById(cart.getCartId().getProduct().getId()).orElseThrow();
@@ -121,10 +126,10 @@ public class BillService implements IBillService {
 				BillDetail billDetail = new BillDetail(billDetailId, cart.getQuantity(), product.getUnitSalePrice());
 				billDetailRepository.save(billDetail);
 			}
-			
+
 			// xoa cart
 			cartRepository.deleteAllByCartId_User(user);
-			
+
 			ResponseCustom<BillDto> res = new ResponseCustom<BillDto>(billMapper.entityToDto(newBill),
 					responseMessage.CREATE_SUCCESS);
 
@@ -135,16 +140,16 @@ public class BillService implements IBillService {
 			return ResponseEntity.badRequest().body(res);
 		}
 	}
-	
+
 	@Override
 	public ResponseEntity<?> approveBill(Long staffId, Long billId) {
 		try {
 			Staff staff = staffRepository.findById(staffId).orElseThrow();
 			Bill bill = billRepository.findById(billId).orElseThrow();
-			
+
 			// update bill
 			bill.setStaff(staff);
-			
+
 			Bill updatedBill = billRepository.save(bill);
 
 			ResponseCustom<BillDto> res = new ResponseCustom<BillDto>(billMapper.entityToDto(updatedBill),

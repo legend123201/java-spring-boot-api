@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.restfulapi.dto.ProductDto;
+import com.example.demo.restfulapi.dto.StaffDto;
 import com.example.demo.restfulapi.mapper.ProductMapper;
 import com.example.demo.restfulapi.message.ResponseMessage;
 import com.example.demo.restfulapi.model.ResponseCustom;
+import com.example.demo.restfulapi.model.Staff;
 import com.example.demo.restfulapi.model.Product;
 import com.example.demo.restfulapi.repository.ProductRepository;
 import com.example.demo.restfulapi.service.IProductService;
@@ -32,6 +34,20 @@ public class ProductService implements IProductService {
 			List<Product> allProducts = productRepository.findAll();
 			ResponseCustom<List<ProductDto>> res = new ResponseCustom<List<ProductDto>>(productMapper.entityToDto(allProducts),
 					responseMessage.GET_ALL_SUCCESS);
+			return ResponseEntity.ok().body(res);
+		} catch (Exception e) {
+			// TODO: handle exception
+			ResponseCustom<String> res = new ResponseCustom<String>(null, e.getMessage());
+			return ResponseEntity.badRequest().body(res);
+		}
+	}
+	
+	@Override
+	public ResponseEntity<?> getProductById(Long productId) {
+		try {
+			Product product = productRepository.findById(productId).orElseThrow();
+			ResponseCustom<ProductDto> res = new ResponseCustom<ProductDto>(productMapper.entityToDto(product),
+					responseMessage.GET_ITEM_SUCCESS);
 			return ResponseEntity.ok().body(res);
 		} catch (Exception e) {
 			// TODO: handle exception

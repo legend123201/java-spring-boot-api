@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.restfulapi.dto.StaffDto;
 import com.example.demo.restfulapi.dto.UserDto;
 import com.example.demo.restfulapi.mapper.UserMapper;
 import com.example.demo.restfulapi.message.ResponseMessage;
 import com.example.demo.restfulapi.model.ResponseCustom;
+import com.example.demo.restfulapi.model.Staff;
 import com.example.demo.restfulapi.model.User;
 import com.example.demo.restfulapi.repository.UserRepository;
 import com.example.demo.restfulapi.service.IUserService;
@@ -27,6 +29,25 @@ public class UserService implements IUserService {
 	// private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 	@Override
+	public ResponseEntity<?> login(String username, String password) {
+		try {
+			List<User> userList = userRepository.login(username, password);
+			if(userList.size() == 1) {
+				ResponseCustom<List<UserDto>> res = new ResponseCustom<List<UserDto>>(userMapper.entityToDto(userList),
+						responseMessage.LOGIN_SUCCESS);
+				return ResponseEntity.ok().body(res);
+			}else {
+				ResponseCustom<String> res = new ResponseCustom<String>(null, responseMessage.LOGIN_FAILED);
+				return ResponseEntity.badRequest().body(res);
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			ResponseCustom<String> res = new ResponseCustom<String>(null, e.getMessage());
+			return ResponseEntity.badRequest().body(res);
+		}
+	}
+	@Override
 	public ResponseEntity<?> getAllUsers() {
 		try {
 			List<User> allUsers = userRepository.findAll();
@@ -40,6 +61,20 @@ public class UserService implements IUserService {
 		}
 	}
 
+	@Override
+	public ResponseEntity<?> getUserById(Long userId) {
+		try {
+			User user = userRepository.findById(userId).orElseThrow();
+			ResponseCustom<UserDto> res = new ResponseCustom<UserDto>(userMapper.entityToDto(user),
+					responseMessage.GET_ITEM_SUCCESS);
+			return ResponseEntity.ok().body(res);
+		} catch (Exception e) {
+			// TODO: handle exception
+			ResponseCustom<String> res = new ResponseCustom<String>(null, e.getMessage());
+			return ResponseEntity.badRequest().body(res);
+		}
+	}
+	
 	@Override
 	public ResponseEntity<?> createUser(UserDto newUserDto) {
 		try {

@@ -27,11 +27,45 @@ public class StaffService implements IStaffService {
 	// private static final Logger LOGGER = LoggerFactory.getLogger(StaffService.class);
 
 	@Override
+	public ResponseEntity<?> login(String username, String password) {
+		try {
+			List<Staff> staffList = staffRepository.login(username, password);
+			if(staffList.size() == 1) {
+				ResponseCustom<List<StaffDto>> res = new ResponseCustom<List<StaffDto>>(staffMapper.entityToDto(staffList),
+						responseMessage.LOGIN_SUCCESS);
+				return ResponseEntity.ok().body(res);
+			}else {
+				ResponseCustom<String> res = new ResponseCustom<String>(null, responseMessage.LOGIN_FAILED);
+				return ResponseEntity.badRequest().body(res);
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			ResponseCustom<String> res = new ResponseCustom<String>(null, e.getMessage());
+			return ResponseEntity.badRequest().body(res);
+		}
+	}
+	
+	@Override
 	public ResponseEntity<?> getAllStaffs() {
 		try {
 			List<Staff> allStaffs = staffRepository.findAll();
 			ResponseCustom<List<StaffDto>> res = new ResponseCustom<List<StaffDto>>(staffMapper.entityToDto(allStaffs),
 					responseMessage.GET_ALL_SUCCESS);
+			return ResponseEntity.ok().body(res);
+		} catch (Exception e) {
+			// TODO: handle exception
+			ResponseCustom<String> res = new ResponseCustom<String>(null, e.getMessage());
+			return ResponseEntity.badRequest().body(res);
+		}
+	}
+	
+	@Override
+	public ResponseEntity<?> getStaffById(Long staffId) {
+		try {
+			Staff staff = staffRepository.findById(staffId).orElseThrow();
+			ResponseCustom<StaffDto> res = new ResponseCustom<StaffDto>(staffMapper.entityToDto(staff),
+					responseMessage.GET_ITEM_SUCCESS);
 			return ResponseEntity.ok().body(res);
 		} catch (Exception e) {
 			// TODO: handle exception
