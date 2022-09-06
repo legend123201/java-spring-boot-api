@@ -17,6 +17,7 @@ import com.example.demo.restfulapi.model.ResponseCustom;
 import com.example.demo.restfulapi.model.Staff;
 import com.example.demo.restfulapi.model.User;
 import com.example.demo.restfulapi.model.compositeKey.ImportOrderDetailId;
+import com.example.demo.restfulapi.model.extra.ImportOrderForReport;
 import com.example.demo.restfulapi.model.request.CreateImportOrderRequest;
 import com.example.demo.restfulapi.model.ImportOrder;
 import com.example.demo.restfulapi.model.ImportOrderDetail;
@@ -59,6 +60,20 @@ public class ImportOrderService implements IImportOrderService {
 		try {
 			List<ImportOrder> allImportOrders = importOrderRepository.findAll();
 			ResponseCustom<List<ImportOrderDto>> res = new ResponseCustom<List<ImportOrderDto>>(importOrderMapper.entityToDto(allImportOrders),
+					responseMessage.GET_ALL_SUCCESS);
+			return ResponseEntity.ok().body(res);
+		} catch (Exception e) {
+			// TODO: handle exception
+			ResponseCustom<String> res = new ResponseCustom<String>(null, e.getMessage());
+			return ResponseEntity.badRequest().body(res);
+		}
+	}
+	
+	@Override
+	public ResponseEntity<?> getImportOrdersForReport() {
+		try {
+			List<ImportOrderForReport> importOrderForReportList = importOrderRepository.ImportOrderForReportList();
+			ResponseCustom<List<ImportOrderForReport>> res = new ResponseCustom<List<ImportOrderForReport>>(importOrderForReportList,
 					responseMessage.GET_ALL_SUCCESS);
 			return ResponseEntity.ok().body(res);
 		} catch (Exception e) {

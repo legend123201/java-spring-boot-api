@@ -23,9 +23,21 @@ public class ProductController {
 	@Autowired
 	private IProductService productService;
 	
+	
+	
 	@GetMapping("")
 	public ResponseEntity<?> getAllProducts() {
 		return productService.getAllProducts();
+	}
+	
+	@GetMapping("/newest")
+	public ResponseEntity<?> getNewestProducts() {
+		return productService.getNewestProducts();
+	}
+	
+	@GetMapping("/bestselling")
+	public ResponseEntity<?> getBestSellingProducts() {
+		return productService.getBestSellingProducts();
 	}
 	
 	@GetMapping("/{id}")

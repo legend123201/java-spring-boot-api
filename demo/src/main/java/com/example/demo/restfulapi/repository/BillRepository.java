@@ -12,6 +12,7 @@ import com.example.demo.restfulapi.model.Cart;
 import com.example.demo.restfulapi.model.Staff;
 import com.example.demo.restfulapi.model.User;
 import com.example.demo.restfulapi.model.extra.BillAndPrice;
+import com.example.demo.restfulapi.model.extra.BillForReport;
 import com.example.demo.restfulapi.model.extra.UserBills;
 
 @Repository
@@ -28,4 +29,11 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
 			+ "FROM bill, bill_detail\r\n" + "WHERE bill.id = bill_detail.bill_id AND bill.user_id = :userId\r\n"
 			+ "GROUP BY bill_id\r\n" + "ORDER BY DATETIME\r\n" + "DESC", nativeQuery = true)
 	List<UserBills> BillListByUserId(@Param("userId") Long userId);
+	
+	@Query(value = "SELECT bill_id as billId, datetime, staff.name as staffName, user.name as userName, SUM(current_unit_sale_price * quantity) AS billPrice, IF(staff_id IS NULL, 0, 1) AS isApproved\r\n"
+			+ "FROM bill, bill_detail, staff, user\r\n"
+			+ "WHERE bill.id = bill_detail.bill_id AND bill.user_id = user.id AND bill.staff_id = staff.id\r\n"
+			+ "GROUP BY bill_id\r\n"
+			+ "ORDER BY DATETIME", nativeQuery = true)
+	List<BillForReport> BillForReportList();
 }

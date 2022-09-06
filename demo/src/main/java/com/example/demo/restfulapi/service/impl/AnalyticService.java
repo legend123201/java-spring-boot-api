@@ -12,6 +12,7 @@ import com.example.demo.restfulapi.mapper.ImportOrderDetailMapper;
 import com.example.demo.restfulapi.message.ResponseMessage;
 import com.example.demo.restfulapi.model.ResponseCustom;
 import com.example.demo.restfulapi.model.extra.BillAndPrice;
+import com.example.demo.restfulapi.model.extra.ImportOrderAndPrice;
 import com.example.demo.restfulapi.model.ImportOrder;
 import com.example.demo.restfulapi.model.ImportOrderDetail;
 import com.example.demo.restfulapi.repository.BillRepository;
@@ -30,6 +31,9 @@ public class AnalyticService implements IAnalyticService {
 	
 	@Autowired
 	private BillRepository billRepository;
+	
+	@Autowired
+	private ImportOrderRepository importOrderRepository;
 
 	@Autowired
 	private ImportOrderDetailMapper importOrderDetailMapper;
@@ -68,19 +72,54 @@ public class AnalyticService implements IAnalyticService {
 	}	
 	
 	@Override
-	public ResponseEntity<?> analyticRevenueByMonth() {
+	public ResponseEntity<?> analyticRevenueByMonth(Integer analyticYear) {
 		try {
 			List<BillAndPrice> billAndPriceList = billRepository.BillAndPriceList();
-			int thisYear = LocalDateTime.now().getYear();
 			int[] analyticRevenueByMonth = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 			
 			for(BillAndPrice billAndPrice : billAndPriceList) {
-				if(billAndPrice.getdatetime().getYear() == thisYear) {
+				if(billAndPrice.getdatetime().getYear() == analyticYear) {
 					analyticRevenueByMonth[billAndPrice.getdatetime().getMonthValue() - 1] += billAndPrice.getbillPrice();
 				}
 			}
 			
 			ResponseCustom<int[]> res = new ResponseCustom<int[]>(analyticRevenueByMonth,
+					responseMessage.ANALYTIC_SUCCESS);
+			return ResponseEntity.ok().body(res);
+		} catch (Exception e) {
+			// TODO: handle exception
+			ResponseCustom<String> res = new ResponseCustom<String>(null, e.getMessage());
+			return ResponseEntity.badRequest().body(res);
+		}
+	}	
+	
+	@Override
+	public ResponseEntity<?> analyticProfitByMonth(Integer analyticYear) {
+		try {
+			List<BillAndPrice> billAndPriceList = billRepository.BillAndPriceList();
+			List<ImportOrderAndPrice> importOrderAndPriceList = importOrderRepository.ImportOrderAndPriceList();
+			
+			int[] totalSellByMonth = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			int[] totalBuyByMonth = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			int[] analyticProfitByMonth = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			
+			for(BillAndPrice billAndPrice : billAndPriceList) {
+				if(billAndPrice.getdatetime().getYear() == analyticYear) {
+					totalSellByMonth[billAndPrice.getdatetime().getMonthValue() - 1] += billAndPrice.getbillPrice();
+				}
+			}
+			
+			for(ImportOrderAndPrice importOrderAndPrice :importOrderAndPriceList) {
+				if(importOrderAndPrice.getdatetime().getYear() == analyticYear) {
+					totalBuyByMonth[importOrderAndPrice.getdatetime().getMonthValue() - 1] += importOrderAndPrice.getimportOrderPrice();
+				}
+			}
+			
+			for(int i = 0; i < 12; i++) {
+				analyticProfitByMonth[i] = totalSellByMonth[i] - totalBuyByMonth[i];
+			}
+			
+			ResponseCustom<int[]> res = new ResponseCustom<int[]>(analyticProfitByMonth,
 					responseMessage.ANALYTIC_SUCCESS);
 			return ResponseEntity.ok().body(res);
 		} catch (Exception e) {

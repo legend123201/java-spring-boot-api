@@ -29,6 +29,11 @@ public class ImportOrderController {
 	public ResponseEntity<?> getAllImportOrders() {
 		return importOrderService.getAllImportOrders();
 	}
+	
+	@GetMapping("/report")
+	public ResponseEntity<?> getImportOrdersForReport() {
+		return importOrderService.getImportOrdersForReport();
+	}
 
 	@PostMapping("/staffId/{staffId}")
 	public ResponseEntity<?> createImportOrder(@PathVariable(value = "staffId") Long staffId,

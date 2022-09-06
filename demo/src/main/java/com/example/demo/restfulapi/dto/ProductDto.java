@@ -1,5 +1,7 @@
 package com.example.demo.restfulapi.dto;
 
+import com.example.demo.restfulapi.model.Category;
+
 public class ProductDto {
 	private Long id;
 	private String name;
@@ -8,13 +10,14 @@ public class ProductDto {
 	private Long unitSalePrice;
 	private String measureUnit;
 	private String image;
+	private Category category;
 
 	public ProductDto() {
 		super();
 	}
 
 	public ProductDto(Long id, String name, Long quantityInStock, Long unitPerchasePrice, Long unitSalePrice,
-			String measureUnit, String image) {
+			String measureUnit, String image, Category category) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -23,6 +26,7 @@ public class ProductDto {
 		this.unitSalePrice = unitSalePrice;
 		this.measureUnit = measureUnit;
 		this.image = image;
+		this.category = category;
 	}
 
 	public Long getId() {
@@ -79,6 +83,14 @@ public class ProductDto {
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 }

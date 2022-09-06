@@ -21,6 +21,7 @@ import com.example.demo.restfulapi.model.Staff;
 import com.example.demo.restfulapi.model.User;
 import com.example.demo.restfulapi.model.compositeKey.BillDetailId;
 import com.example.demo.restfulapi.model.extra.BillAndPrice;
+import com.example.demo.restfulapi.model.extra.BillForReport;
 import com.example.demo.restfulapi.model.extra.UserBills;
 import com.example.demo.restfulapi.model.Bill;
 import com.example.demo.restfulapi.model.BillDetail;
@@ -83,6 +84,21 @@ public class BillService implements IBillService {
 			List<UserBills> billList = billRepository.BillListByUserId(userId);
 			
 			ResponseCustom<List<UserBills>> res = new ResponseCustom<List<UserBills>>(billList,
+					responseMessage.GET_ALL_SUCCESS);
+			return ResponseEntity.ok().body(res);
+		} catch (Exception e) {
+			// TODO: handle exception
+			ResponseCustom<String> res = new ResponseCustom<String>(null, e.getMessage());
+			return ResponseEntity.badRequest().body(res);
+		}
+	}
+	
+	@Override
+	public ResponseEntity<?> getBillsForReport() {
+		try {
+			List<BillForReport> billForReportList = billRepository.BillForReportList();
+			
+			ResponseCustom<List<BillForReport>> res = new ResponseCustom<List<BillForReport>>(billForReportList,
 					responseMessage.GET_ALL_SUCCESS);
 			return ResponseEntity.ok().body(res);
 		} catch (Exception e) {

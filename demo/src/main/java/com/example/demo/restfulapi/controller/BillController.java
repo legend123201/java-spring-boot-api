@@ -33,6 +33,11 @@ public class BillController {
 		return billService.getAllBillsByUserId(userId);
 	}
 	
+	@GetMapping("/report")
+	public ResponseEntity<?> getBillsForReport() {
+		return billService.getBillsForReport();
+	}
+	
 	@PostMapping("/userId/{userId}")
 	public ResponseEntity<?> createBill(@PathVariable(value = "userId") Long userId) {
 		return billService.createBill(userId);

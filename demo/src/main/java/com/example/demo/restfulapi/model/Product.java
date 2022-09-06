@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -58,13 +60,17 @@ public class Product implements Serializable {
 	@JsonIgnore
 	private List<ImportOrderDetail> listImportOrderDetails;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "category_id")
+	private Category category;
+
 	public Product() {
 		super();
 	}
 
 	public Product(Long id, String name, Long quantityInStock, Long unitPerchasePrice, Long unitSalePrice,
 			String measureUnit, String image, List<Cart> listCarts, List<BillDetail> listBillDetails,
-			List<ImportOrderDetail> listImportOrderDetails) {
+			List<ImportOrderDetail> listImportOrderDetails, Category category) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -76,6 +82,7 @@ public class Product implements Serializable {
 		this.listCarts = listCarts;
 		this.listBillDetails = listBillDetails;
 		this.listImportOrderDetails = listImportOrderDetails;
+		this.category = category;
 	}
 
 	public Long getId() {
@@ -156,6 +163,14 @@ public class Product implements Serializable {
 
 	public void setListImportOrderDetails(List<ImportOrderDetail> listImportOrderDetails) {
 		this.listImportOrderDetails = listImportOrderDetails;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	public static long getSerialversionuid() {

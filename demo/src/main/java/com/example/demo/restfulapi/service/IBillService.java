@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 public interface IBillService {
 	ResponseEntity<?> getAllBills(); 
 	ResponseEntity<?> getAllBillsByUserId(Long userId); 
+	ResponseEntity<?> getBillsForReport(); 
 	ResponseEntity<?> createBill(Long userId); 
 	ResponseEntity<?> approveBill(Long staffId, Long billId); 
 }

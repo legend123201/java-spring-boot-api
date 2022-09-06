@@ -34,8 +34,13 @@ public class AnalyticController {
 		return analyticService.analyticBill();
 	}
 	
-	@GetMapping("/revenue")
-	public ResponseEntity<?> analyticRevenueByMonth() {
-		return analyticService.analyticRevenueByMonth();
+	@GetMapping("/revenue/year/{analyticYear}")
+	public ResponseEntity<?> analyticRevenueByMonth(@PathVariable(value = "analyticYear") Integer analyticYear) {
+		return analyticService.analyticRevenueByMonth(analyticYear);
+	}
+	
+	@GetMapping("/profit/year/{analyticYear}")
+	public ResponseEntity<?> profitRevenueByMonth(@PathVariable(value = "analyticYear") Integer analyticYear) {
+		return analyticService.analyticProfitByMonth(analyticYear);
 	}
 }
